@@ -1,27 +1,15 @@
-// src/app/layout.tsx
-
-import "./global.css";   // ← esatto: punto, slash, nome_file.css
+import "./global.css";           // CSS globale in src/app/
 
 import React from "react";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="it">
       <head>
         <title>LUXAI Dashboard</title>
-        <meta
-          name="description"
-          content="Dashboard interattiva per il business plan LUXAI"
-        />
+        <meta name="description" content="Dashboard interattiva per il business plan LUXAI" />
         <link rel="icon" href="/favicon.ico" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body>{children}</body>
     </html>
