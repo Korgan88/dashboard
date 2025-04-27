@@ -1,5 +1,5 @@
 // src/app/layout.tsx
-import "@/styles/globals.css";  // ← importa subito il CSS globale
+import "../../styles/globals.css";  // ← import dal root/styles
 
 import React from "react";
 
