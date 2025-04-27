@@ -1,118 +1,161 @@
-"use client";
+// src/app/page.tsx
+import Link from "next/link";
 
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { PositioningChart } from "@/components/dashboard/charts";
-
-export default function CompetitorsPage() {
+export default function HomePage() {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">
-          Benchmarking Competitor
-        </h2>
-      </div>
+    <div className="flex flex-col min-h-screen bg-black text-white">
+      <header className="bg-black text-white py-6 border-b border-gray-800">
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl font-bold">LUXAI STARTUP</h1>
+          <p className="mt-2 text-gray-300">
+            Dashboard Interattiva Business Plan
+          </p>
+        </div>
+      </header>
 
-      {/* Competitor Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>LUXAI</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">8.9/10</div>
-            <p className="text-xs text-gray-400">Punteggio complessivo</p>
-            <div className="mt-4 text-sm">
-              <span className="text-green-500 font-medium">Leader</span> in innovazione
-            </div>
-          </CardContent>
-        </Card>
+      <main className="flex-1 bg-black">
+        <div className="container mx-auto px-6 py-12">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">
+              Benvenuto nella Dashboard LUXAI
+            </h2>
+            <p className="text-lg text-gray-300">
+              Esplora i dati, le analisi e le simulazioni interattive del
+              business plan LUXAI. Questa dashboard ti permette di visualizzare
+              tutte le informazioni chiave e interagire con i servizi AI.
+            </p>
+          </div>
 
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Competitor A</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">7.0/10</div>
-            <p className="text-xs text-gray-400">Punteggio complessivo</p>
-            <div className="mt-4 text-sm">
-              <span className="text-yellow-500 font-medium">Medio</span> in innovazione
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Competitor B</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">7.2/10</div>
-            <p className="text-xs text-gray-400">Punteggio complessivo</p>
-            <div className="mt-4 text-sm">
-              <span className="text-blue-500 font-medium">Forte</span> in UX
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Competitor C</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">7.0/10</div>
-            <p className="text-xs text-gray-400">Punteggio complessivo</p>
-            <div className="mt-4 text-sm">
-              <span className="text-purple-500 font-medium">Forte</span> in tecnologia
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Posizionamento Strategico */}
-      <div className="grid gap-6 md:grid-cols-1">
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Posizionamento Strategico</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <PositioningChart />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Funnel di Acquisizione e Retention */}
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Funnel di Acquisizione e Retention</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {/* LUXAI */}
-              <div>
-                <h4 className="text-sm font-medium mb-2">LUXAI</h4>
-                <div className="flex items-center space-x-2">
-                  <div className="w-full bg-gray-700 rounded-full h-2.5">
-                    <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: "100%" }}></div>
-                  </div>
-                  <span className="text-xs">100% Visite</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Link href="/dashboard" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-blue-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">
+                    Dashboard Overview
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Visualizza le metriche chiave e i grafici principali in
+                    un'unica vista panoramica.
+                  </p>
+                  <div className="text-blue-400 font-medium">Esplora →</div>
                 </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <div className="w-full bg-gray-700 rounded-full h-2.5">
-                    <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: "42%" }}></div>
-                  </div>
-                  <span className="text-xs">42% Registrazioni</span>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/market" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-green-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-green-400 transition-colors">
+                    Analisi di Mercato
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Esplora i dati di crescita del mercato, CAGR per segmento e
+                    penetrazione del dropshipping.
+                  </p>
+                  <div className="text-green-400 font-medium">Esplora →</div>
                 </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <div className="w-full bg-gray-700 rounded-full h-2.5">
-                    <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: "28%" }}></div>
-                  </div>
-                  <span className="text-xs">28% Acquisti</span>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/demographics" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-purple-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-400 transition-colors">
+                    Demografia
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Analizza la distribuzione generazionale e i comportamenti
+                    d'acquisto per segmento demografico.
+                  </p>
+                  <div className="text-purple-400 font-medium">Esplora →</div>
                 </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <div className="w-full bg-gray-700 rounded-full h-2.5">
-                    <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: "18%" }}></div>
-                  </div
+              </div>
+            </Link>
+
+            <Link href="/dashboard/competitors" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-orange-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-orange-400 transition-colors">
+                    Benchmarking Competitor
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Confronta LUXAI con i principali competitor in termini di
+                    posizionamento e performance.
+                  </p>
+                  <div className="text-orange-400 font-medium">Esplora →</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/finance" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-red-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-red-400 transition-colors">
+                    Piano Finanziario
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Visualizza proiezioni finanziarie, scenari di crescita e
+                    suddivisione del budget iniziale.
+                  </p>
+                  <div className="text-red-400 font-medium">Esplora →</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/expansion" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-yellow-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-yellow-400 transition-colors">
+                    Strategia di Espansione
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Esplora le fasi di espansione, il processo di onboarding
+                    delle boutique e le metriche di successo.
+                  </p>
+                  <div className="text-yellow-400 font-medium">Esplora →</div>
+                </div>
+              </div>
+            </Link>
+
+            <Link href="/dashboard/ai-services" className="block group">
+              <div className="dashboard-card">
+                <div className="h-3 bg-indigo-600"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-indigo-400 transition-colors">
+                    Servizi AI
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Interagisci con le simulazioni dei servizi AI: Insight,
+                    Product Matcher, Trend Generator e Assistente.
+                  </p>
+                  <div className="text-indigo-400 font-medium">Esplora →</div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          <div className="mt-16 max-w-3xl mx-auto text-center">
+            <Link
+              href="/dashboard"
+              className="inline-block bg-white text-black px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition-colors"
+            >
+              Accedi alla Dashboard
+            </Link>
+          </div>
+        </div>
+      </main>
+
+      <footer className="bg-black py-8 border-t border-gray-800">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-gray-400">© 2025 LUXAI STARTUP. Tutti i diritti riservati.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
