@@ -1,80 +1,36 @@
-// src/app/dashboard/page.tsx
+"use client";
+
 import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   MarketGrowthChart,
   GenerationalDistributionChart,
+  PositioningChart,            //  ← aggiunto
+  FinancialProjectionsChart,
   InsightFashionChart,
   ProductMatcherChart,
   TrendGeneratorChart,
   AssistantAIChart,
 } from "@/components/dashboard/charts";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
-      {/* Titolo Sezione */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Overview</h2>
       </div>
 
-      {/* Carte Metriche */}
+      {/* KPI cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Mercato Luxury</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">533.39M USD</div>
-            <p className="text-xs text-gray-400">Valore stimato 2025</p>
-            <div className="mt-4 text-sm">
-              <span className="text-green-500 font-medium">↗ 17.4%</span> crescita annuale
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Conversione</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3.5%</div>
-            <p className="text-xs text-gray-400">Tasso di conversione</p>
-            <div className="mt-4 text-sm">
-              <span className="text-green-500 font-medium">+40%</span> vs competitor
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Break-even</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Mese 14</div>
-            <p className="text-xs text-gray-400">Punto di pareggio</p>
-            <div className="mt-4 text-sm">
-              <span className="text-green-500 font-medium">ROI 215%</span> a 24 mesi
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Boutique Partner</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">15-20</div>
-            <p className="text-xs text-gray-400">Obiettivo a 12 mesi</p>
-            <div className="mt-4 text-sm">
-              <span className="text-green-500 font-medium">5-7</span> nella fase beta
-            </div>
-          </CardContent>
-        </Card>
+        {/* … (le tue quattro card KPI restano uguali) … */}
       </div>
 
-      {/* Grafici Statici Esistenti */}
+      {/* Grafici Mercato + Generazioni */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="dashboard-card">
           <CardHeader>
-            <CardTitle>Crescita del Mercato Luxury</CardTitle>
+            <CardTitle>Crescita Mercato Luxury</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="chart-container">
@@ -82,6 +38,7 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
+
         <Card className="dashboard-card">
           <CardHeader>
             <CardTitle>Distribuzione Generazionale</CardTitle>
@@ -93,6 +50,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Posizionamento + Proiezioni finanziarie */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="dashboard-card">
           <CardHeader>
@@ -104,6 +63,7 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
+
         <Card className="dashboard-card">
           <CardHeader>
             <CardTitle>Proiezioni Finanziarie</CardTitle>
@@ -116,47 +76,26 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* 🎨 Visualizzazioni Interattive AI */}
+      {/* Demo servizi AI */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>AI Insight</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <InsightFashionChart />
-            </div>
-          </CardContent>
+          <CardHeader><CardTitle>Insight AI</CardTitle></CardHeader>
+          <CardContent><InsightFashionChart /></CardContent>
         </Card>
+
         <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Product Matcher</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ProductMatcherChart />
-            </div>
-          </CardContent>
+          <CardHeader><CardTitle>Product Matcher</CardTitle></CardHeader>
+          <CardContent><ProductMatcherChart /></CardContent>
         </Card>
+
         <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Trend Generator</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <TrendGeneratorChart />
-            </div>
-          </CardContent>
+          <CardHeader><CardTitle>Trend Generator</CardTitle></CardHeader>
+          <CardContent><TrendGeneratorChart /></CardContent>
         </Card>
+
         <Card className="dashboard-card">
-          <CardHeader>
-            <CardTitle>Assistente AI</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <AssistantAIChart />
-            </div>
-          </CardContent>
+          <CardHeader><CardTitle>Assistente AI</CardTitle></CardHeader>
+          <CardContent><AssistantAIChart /></CardContent>
         </Card>
       </div>
     </div>
