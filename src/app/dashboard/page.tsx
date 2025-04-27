@@ -4,8 +4,6 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   MarketGrowthChart,
   GenerationalDistributionChart,
-  PositioningChart,
-  FinancialProjectionsChart,
   InsightFashionChart,
   ProductMatcherChart,
   TrendGeneratorChart,
