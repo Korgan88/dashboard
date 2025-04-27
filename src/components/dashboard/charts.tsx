@@ -1,4 +1,6 @@
+/*  src/components/dashboard/charts.tsx  */
 "use client";
+
 import React from "react";
 import {
   Chart as ChartJS,
@@ -12,8 +14,9 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line, Bar, Pie, Radar } from "react-chartjs-2";
+import { Line, Bar, Pie, Radar, Scatter } from "react-chartjs-2";
 
+/* ─────── Registrazione Chart.js ─────── */
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -26,7 +29,7 @@ ChartJS.register(
   Legend
 );
 
-/*═════════════  GRAFICI STATICI  ═════════════*/
+/*═════════════  STATICI  ═════════════*/
 export const MarketGrowthChart = () => (
   <div className="flex h-full items-center justify-center">
     <div className="w-full h-64 bg-gradient-to-r from-blue-900 to-blue-600 rounded-lg flex flex-col items-center justify-center">
@@ -53,14 +56,14 @@ export const GenerationalDistributionChart = () => (
   </div>
 );
 
-/*═════════════  DEMO AI (nuovi)  ═════════════*/
+/*═════════════  DEMO AI  ═════════════*/
 export const InsightFashionChart = () => (
   <Line
     data={{
       labels: ["Gen Z", "Millennials", "Gen X", "Boomers"],
       datasets: [
         {
-          label: "Engagement AI Insight",
+          label: "Engagement Insight AI",
           data: [65, 75, 50, 40],
           borderColor: "var(--accent-primary)",
           backgroundColor: "rgba(0,229,255,.25)",
@@ -71,8 +74,10 @@ export const InsightFashionChart = () => (
     }}
     options={{
       plugins: { legend: { labels: { color: "var(--text-light)" } }, tooltip: { backgroundColor: "#222" } },
-      scales: { x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
-                y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } } },
+      scales: {
+        x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+        y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+      },
       responsive: true,
     }}
   />
@@ -82,12 +87,20 @@ export const ProductMatcherChart = () => (
   <Bar
     data={{
       labels: ["Look 1", "Look 2", "Look 3", "Look 4", "Look 5"],
-      datasets: [{ label: "Match %", data: [88, 76, 92, 64, 80], backgroundColor: "var(--accent-secondary)" }],
+      datasets: [
+        {
+          label: "Match %",
+          data: [88, 76, 92, 64, 80],
+          backgroundColor: "var(--accent-secondary)",
+        },
+      ],
     }}
     options={{
       plugins: { legend: { display: false }, tooltip: { backgroundColor: "#222" } },
-      scales: { x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
-                y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } } },
+      scales: {
+        x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+        y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+      },
       maintainAspectRatio: false,
     }}
   />
@@ -109,7 +122,9 @@ export const TrendGeneratorChart = () => (
         },
       ],
     }}
-    options={{ plugins: { legend: { labels: { color: "var(--text-light)" } }, tooltip: { backgroundColor: "#222" } } }}
+    options={{
+      plugins: { legend: { labels: { color: "var(--text-light)" } }, tooltip: { backgroundColor: "#222" } },
+    }}
   />
 );
 
@@ -140,7 +155,7 @@ export const AssistantAIChart = () => (
   />
 );
 
-/*═════════════  FINANCE (mancanti)  ═════════════*/
+/*═════════════  FINANCE  ═════════════*/
 export const FinancialProjectionsChart = () => (
   <Bar
     data={{
@@ -155,7 +170,10 @@ export const FinancialProjectionsChart = () => (
     }}
     options={{
       plugins: { legend: { display: false }, tooltip: { backgroundColor: "#222" } },
-      scales: { x: { ticks: { color: "var(--text-light)" } }, y: { ticks: { color: "var(--text-light)" } } },
+      scales: {
+        x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+        y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+      },
       maintainAspectRatio: false,
     }}
   />
@@ -188,9 +206,65 @@ export const GrowthScenariosChart = () => (
     }}
     options={{
       plugins: { legend: { labels: { color: "var(--text-light)" } }, tooltip: { backgroundColor: "#222" } },
-      scales: { x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
-                y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } } },
+      scales: {
+        x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+        y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+      },
     }}
   />
 );
 
+/*═════════════  POSITIONING  ═════════════*/
+export const PositioningChart = () => (
+  <Scatter
+    data={{
+      datasets: [
+        {
+          label: "LUXAI",
+          data: [{ x: 85, y: 20 }],
+          backgroundColor: "#ef4444",
+          pointRadius: 6,
+        },
+        {
+          label: "Competitor A",
+          data: [{ x: 72, y: 32 }],
+          backgroundColor: "#3b82f6",
+          pointRadius: 5,
+        },
+        {
+          label: "Competitor B",
+          data: [{ x: 58, y: 15 }],
+          backgroundColor: "#facc15",
+          pointRadius: 5,
+        },
+        {
+          label: "Competitor C",
+          data: [{ x: 87, y: 47 }],
+          backgroundColor: "#10b981",
+          pointRadius: 5,
+        },
+      ],
+    }}
+    options={{
+      plugins: { legend: { labels: { color: "var(--text-light)", boxWidth: 12 } }, tooltip: { backgroundColor: "#222" } },
+      scales: {
+        x: {
+          title: { display: true, text: "Innovazione Tecnologica", color: "var(--text-light)" },
+          ticks: { color: "var(--text-light)" },
+          grid: { color: "#222" },
+          min: 0,
+          max: 100,
+        },
+        y: {
+          title: { display: true, text: "Esperienza Utente", color: "var(--text-light)" },
+          ticks: { color: "var(--text-light)" },
+          grid: { color: "#222" },
+          min: 0,
+          max: 100,
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+    }}
+  />
+);
