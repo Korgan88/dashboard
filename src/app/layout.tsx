@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 
-import "./globals.css";  // ← Assicurati che globals.css si trovi in src/app/globals.css
+import "./globals.css";  // ← importa qui il globals.css spostato in src/app
 
 import React from "react";
 
@@ -23,9 +23,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
