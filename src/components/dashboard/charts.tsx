@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import {
   Chart as ChartJS,
@@ -27,7 +26,7 @@ ChartJS.register(
   Legend
 );
 
-/* —— Grafici statici esistenti —— */
+/*═════════════  STATICI  ═════════════*/
 export const MarketGrowthChart = () => (
   <div className="flex h-full items-center justify-center">
     <div className="w-full h-64 bg-gradient-to-r from-blue-900 to-blue-600 rounded-lg flex flex-col items-center justify-center">
@@ -54,7 +53,7 @@ export const GenerationalDistributionChart = () => (
   </div>
 );
 
-/* —— Nuove demo AI —— */
+/*═════════════  DEMO AI  ═════════════*/
 export const InsightFashionChart = () => (
   <Line
     data={{
