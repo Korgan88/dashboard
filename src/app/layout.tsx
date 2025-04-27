@@ -1,5 +1,7 @@
+// src/app/layout.tsx
+import "@/styles/globals.css";  // ← importa subito il CSS globale
+
 import React from "react";
-import Link from "next/link";
 
 export default function RootLayout({
   children,
@@ -12,9 +14,12 @@ export default function RootLayout({
         <title>LUXAI Dashboard</title>
         <meta name="description" content="Dashboard interattiva per il business plan LUXAI" />
         <link rel="icon" href="/favicon.ico" />
-        <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="bg-black text-white">
+      <body>
         {children}
       </body>
     </html>
