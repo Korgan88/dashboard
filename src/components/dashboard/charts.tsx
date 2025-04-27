@@ -26,13 +26,13 @@ ChartJS.register(
   Legend
 );
 
-/*═════════════  STATICI  ═════════════*/
+/*═════════════  GRAFICI STATICI  ═════════════*/
 export const MarketGrowthChart = () => (
   <div className="flex h-full items-center justify-center">
     <div className="w-full h-64 bg-gradient-to-r from-blue-900 to-blue-600 rounded-lg flex flex-col items-center justify-center">
       <div className="text-xl font-bold text-white mb-2">Crescita del Mercato Luxury</div>
-      <div className="text-sm text-white">2025 533.4 M → 2030 1187.7 M USD</div>
-      <div className="text-lg font-bold text-white mt-2">CAGR 17.4%</div>
+      <div className="text-sm text-white">2025 533 M → 2030 1188 M USD</div>
+      <div className="text-lg font-bold text-white mt-2">CAGR 17.4 %</div>
     </div>
   </div>
 );
@@ -53,7 +53,7 @@ export const GenerationalDistributionChart = () => (
   </div>
 );
 
-/*═════════════  DEMO AI  ═════════════*/
+/*═════════════  DEMO AI (nuovi)  ═════════════*/
 export const InsightFashionChart = () => (
   <Line
     data={{
@@ -139,3 +139,58 @@ export const AssistantAIChart = () => (
     }}
   />
 );
+
+/*═════════════  FINANCE (mancanti)  ═════════════*/
+export const FinancialProjectionsChart = () => (
+  <Bar
+    data={{
+      labels: ["Ricavi", "Costi", "Profitto"],
+      datasets: [
+        {
+          label: "K CHF",
+          data: [900, 390, 510],
+          backgroundColor: ["#10b981", "#ef4444", "#3b82f6"],
+        },
+      ],
+    }}
+    options={{
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: "#222" } },
+      scales: { x: { ticks: { color: "var(--text-light)" } }, y: { ticks: { color: "var(--text-light)" } } },
+      maintainAspectRatio: false,
+    }}
+  />
+);
+
+export const GrowthScenariosChart = () => (
+  <Line
+    data={{
+      labels: ["2025", "2026", "2027", "2028", "2029", "2030"],
+      datasets: [
+        {
+          label: "Ottimistico",
+          data: [0, 35, 78, 125, 190, 280],
+          borderColor: "#10b981",
+          tension: 0.4,
+        },
+        {
+          label: "Realistico",
+          data: [0, 25, 55, 90, 140, 215],
+          borderColor: "#3b82f6",
+          tension: 0.4,
+        },
+        {
+          label: "Conservativo",
+          data: [0, 15, 32, 55, 80, 150],
+          borderColor: "#facc15",
+          tension: 0.4,
+        },
+      ],
+    }}
+    options={{
+      plugins: { legend: { labels: { color: "var(--text-light)" } }, tooltip: { backgroundColor: "#222" } },
+      scales: { x: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } },
+                y: { ticks: { color: "var(--text-light)" }, grid: { color: "#222" } } },
+    }}
+  />
+);
+
