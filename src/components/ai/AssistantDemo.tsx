@@ -10,7 +10,7 @@ export default function AssistantDemo() {
     <div>
       <textarea
         className="bg-gray-800 p-2 w-full h-20 resize-none"
-        placeholder="Fai una domanda di shopping di lusso…"
+        placeholder="Fai una domanda…"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
       />
