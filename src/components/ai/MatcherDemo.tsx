@@ -10,7 +10,7 @@ export default function MatcherDemo() {
     <div>
       <input
         className="bg-gray-800 p-2 w-full"
-        placeholder="Descrivi il look o l'occasione…"
+        placeholder="Descrivi il look…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -18,7 +18,7 @@ export default function MatcherDemo() {
         onClick={() => query && run({ query })}
         className="btn-primary w-full mt-2"
       >
-        Trova abbinamenti
+        Trova match
       </button>
 
       {loading && <p className="mt-2 text-xs">Calcolo…</p>}
