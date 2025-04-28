@@ -1,43 +1,51 @@
-/* src/components/ai/AssistantDemo.tsx */
-"use client";
-import React, { useState } from "react";
-import { fetchAI } from "@/lib/fetchAI";
+'use client';
+
+import React, { useState } from 'react';
 
 export default function AssistantDemo() {
-  const [prompt, setPrompt]   = useState("");
-  const [answer, setAnswer]   = useState("");
+  const [msg,     setMsg]     = useState('');
+  const [answer,  setAnswer]  = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleRun() {
-    if (!prompt.trim()) return;
+  async function askAssistant() {
+    if (!msg.trim()) return;
     setLoading(true);
-    setAnswer("…");
+    setAnswer(null);
+
     try {
-      const { data } = await fetchAI({ service: "assistant", prompt });
-      setAnswer(data);
+      const url  = `/api/ai?service=assistant&prompt=${encodeURIComponent(msg)}`;
+      const res  = await fetch(url);
+      const json = await res.json();
+      setAnswer(json.answer ?? json.error ?? 'Errore sconosciuto');
+    } catch (err) {
+      setAnswer('Network error');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="space-y-2">
+    <>
       <input
-        value={prompt}
-        onChange={e => setPrompt(e.target.value)}
-        placeholder="Esempio: consigliami un outfit da cocktail primaverile"
-        className="w-full bg-gray-800 text-xs p-2 rounded"
+        type="text"
+        value={msg}
+        onChange={e => setMsg(e.target.value)}
+        placeholder="Chiedi qualcosa all’assistente…"
+        className="w-full bg-gray-800 p-2 rounded text-sm mb-2"
       />
       <button
-        onClick={handleRun}
-        className="btn-primary w-full disabled:opacity-50"
+        onClick={askAssistant}
         disabled={loading}
+        className="btn-primary w-full mb-2"
       >
-        {loading ? "Loading…" : "Ask"}
+        {loading ? 'Rispondo…' : 'Invia'}
       </button>
-      <pre className="text-[11px] whitespace-pre-wrap mt-2 max-h-48 overflow-y-auto">
-        {answer}
-      </pre>
-    </div>
+
+      {answer && (
+        <div className="mt-2 text-sm whitespace-pre-wrap text-gray-300">
+          {answer}
+        </div>
+      )}
+    </>
   );
 }
