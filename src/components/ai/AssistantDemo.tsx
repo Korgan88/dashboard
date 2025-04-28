@@ -1,33 +1,43 @@
+/* src/components/ai/AssistantDemo.tsx */
 "use client";
 import React, { useState } from "react";
-import { useDemo } from "@/lib/useDemo";
+import { fetchAI } from "@/lib/fetchAI";
 
 export default function AssistantDemo() {
-  const [question, setQuestion] = useState("");
-  const { loading, data, error, run } = useDemo<{ content: string }>("assistant");
+  const [prompt, setPrompt]   = useState("");
+  const [answer, setAnswer]   = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleRun() {
+    if (!prompt.trim()) return;
+    setLoading(true);
+    setAnswer("…");
+    try {
+      const { data } = await fetchAI({ service: "assistant", prompt });
+      setAnswer(data);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div>
-      <textarea
-        className="bg-gray-800 p-2 w-full h-20 resize-none"
-        placeholder="Fai una domanda…"
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
+    <div className="space-y-2">
+      <input
+        value={prompt}
+        onChange={e => setPrompt(e.target.value)}
+        placeholder="Esempio: consigliami un outfit da cocktail primaverile"
+        className="w-full bg-gray-800 text-xs p-2 rounded"
       />
       <button
-        onClick={() => question && run({ question })}
-        className="btn-primary w-full mt-2"
+        onClick={handleRun}
+        className="btn-primary w-full disabled:opacity-50"
+        disabled={loading}
       >
-        Chiedi
+        {loading ? "Loading…" : "Ask"}
       </button>
-
-      {loading && <p className="mt-2 text-xs">Assistant sta scrivendo…</p>}
-      {error   && <p className="mt-2 text-xs text-red-400">{error}</p>}
-      {data && (
-        <pre className="mt-2 text-xs whitespace-pre-wrap text-gray-300">
-          {data.content}
-        </pre>
-      )}
+      <pre className="text-[11px] whitespace-pre-wrap mt-2 max-h-48 overflow-y-auto">
+        {answer}
+      </pre>
     </div>
   );
 }
