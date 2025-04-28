@@ -7,23 +7,37 @@ import { CardDescription, Button } from "@/components/ui/card";
 export default function TrendDemo() {
   const [loading, setLoading] = useState(false);
   const [trend, setTrend]     = useState<number[]>([]);
+  const [error, setError]     = useState<string | null>(null);
 
-  const handleClick = async () => {
+  const fetchTrend = async () => {
     setLoading(true);
-    const r  = await fetch("/api/ai", {
+    setError(null);
+
+    const res = await fetch("/api/ai", {
       method: "POST",
       body: JSON.stringify({ type: "trend" }),
     });
-    const { data } = await r.json(); /* data = { points:[…] } */
-    setTrend(data.points);
+
+    if (!res.ok) {
+      const { error } = await res.json();
+      setError(error);
+      setLoading(false);
+      return;
+    }
+
+    const { data } = await res.json();
+    const arr = Array.isArray(data) ? data : data.points ?? [];
+    setTrend(arr);
     setLoading(false);
   };
 
   return (
     <>
       <CardDescription>
-        Proiezione di popolarità (0-100) per “quiet luxury”.
+        Proiezione mensile di interesse per “quiet luxury”.
       </CardDescription>
+
+      {error && <p className="text-red-500 text-xs">{error}</p>}
 
       {trend.length > 0 && (
         <Sparklines data={trend} height={60}>
@@ -31,7 +45,7 @@ export default function TrendDemo() {
         </Sparklines>
       )}
 
-      <Button onClick={handleClick} disabled={loading}>
+      <Button onClick={fetchTrend} disabled={loading}>
         {loading ? "Carico…" : "Genera trend"}
       </Button>
     </>
