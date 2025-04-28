@@ -1,3 +1,4 @@
-export default function StubPage() {
-  return <div className="text-center p-6">Pagina in allestimento</div>;
-}
+import InsightDemo   from "@/components/ai/InsightDemo";
+import MatcherDemo   from "@/components/ai/MatcherDemo";
+import TrendDemo     from "@/components/ai/TrendDemo";
+import AssistantDemo from "@/components/ai/AssistantDemo";
