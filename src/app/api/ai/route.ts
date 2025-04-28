@@ -1,42 +1,54 @@
-export const dynamic = "force-dynamic";
+// app/api/ai/route.ts
+import type { NextRequest } from "next/server";
 
-import { NextResponse } from "next/server";
+export const runtime  = "edge";         // obbliga Vercel a crearti la Function
+export const dynamic  = "force-dynamic";
 
-// handler unico
-export async function POST(req: Request) {
-  const { cmd, prompt } = await req.json();
-
-  /* ① Configura correttamente l’SDK */
-  const OpenAI  = (await import("openai")).default;
-  const openai  = new OpenAI({
-    apiKey : process.env.DEEPSEEK_API_KEY,          // chiave DeepSeek
-    baseURL: process.env.DEEPSEEK_BASE_URL ??       // endpoint DeepSeek
-             "https://api.deepseek.com/v1",
-    // → se il provider richiede intestazione custom, usa “baseURL”
-    //   e OpenAI SDK aggiungerà Authorization: Bearer <apiKey>
-  });
-
-  /* ② Scegli il modello in base al comando */
-  const model =
-    cmd === "image"
-      ? "deepseek-v"      // vision
-      : "deepseek-chat";  // solo testo
-
-  /* ③ Chiama la chat completions */
+export async function POST(req: NextRequest) {
   try {
+    const { cmd = "chat", prompt = "" } = await req.json();
+
+    if (!process.env.DEEPSEEK_API_KEY)
+      throw new Error("Missing DEEPSEEK_API_KEY");
+
+    // import dinamico: il bundle edge resta leggero
+    const OpenAI = (await import("openai")).default;
+    const openai = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY });
+
+    const model = cmd === "trend" ? "deepseek-chat" : "deepseek-chat";
+
+    /* ---------- messaggi ---------- */
+    let messages = [{ role: "user", content: prompt }];
+
+    if (cmd === "trend") {
+      messages = [
+        {
+          role: "system",
+          content:
+            "You are a data engine. Return ONLY a valid JSON array of 12 numbers " +
+            "(no objects, no text). The numbers represent monthly growth rates " +
+            "in percent, rounded to one decimal."
+        },
+        { role: "user", content: prompt }
+      ];
+    }
+
     const completion = await openai.chat.completions.create({
       model,
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-      max_tokens : 512
+      messages,
+      temperature: 0.4,
+      max_tokens : 400
     });
 
-    return NextResponse.json({ ok: true, data: completion.choices[0].message });
+    return Response.json(
+      { ok: true, data: completion.choices[0].message },
+      { status: 200 }
+    );
   } catch (err: any) {
-    console.error("[AI-route]", err);
-    return NextResponse.json(
-      { ok: false, error: err?.message ?? "Unknown error" },
+    return Response.json(
+      { ok: false, error: err.message || "Unknown error" },
       { status: 500 }
     );
   }
 }
+
