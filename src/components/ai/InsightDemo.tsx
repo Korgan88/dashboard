@@ -13,7 +13,7 @@ export default function InsightDemo() {
         onChange={(e) => e.target.value && run({ segment: e.target.value })}
       >
         <option value="" disabled>
-          Seleziona segmento…
+          Segmento…
         </option>
         <option>Gen Z</option>
         <option>Millennials</option>
