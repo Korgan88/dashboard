@@ -1,120 +1,41 @@
-/* ------------------------------------------------------------------
- * /app/api/ai/route.ts        (Next-13 “app router” – Edge Runtime)
- * ------------------------------------------------------------------
- * Gestisce 4 micro-servizi demo (insight, matcher, trend, assistant) 
- * che parlano con DeepSeek AI.  Restituisce sempre JSON:
- *   { result: … , image?: "https://..." }
- * È progettato per rimanere snello nel bundle edge – per questo 
- * importiamo dinamicamente la SDK openai/axios solo dentro la route.
- * ------------------------------------------------------------------ */
+export const dynamic = "force-dynamic";
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const runtime = "edge";            // obbligatorio per funzioni Edge
-export const dynamic = "force-dynamic";   // disattiva la cache Vercel Edge
+// handler unico
+export async function POST(req: Request) {
+  const { cmd, prompt } = await req.json();
 
-// ---------------------------------------------------------------------
-// Helper di basso livello: chiamata completions/chat a DeepSeek
-// ---------------------------------------------------------------------
-const chat = async (system: string, user: string) => {
-  // 1. import dinamico (OpenAI node client rimane fuori dal bundle edge)
-  const OpenAI = (await import("openai")).default;
-  const openai  = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY });
-  const model   = "deepseek-chat";
-
-  const resp = await openai.chat.completions.create({
-    model,
-    temperature: 0.7,
-    messages: [
-      { role: "system", content: system },
-      { role: "user",   content: user   },
-    ],
+  /* ① Configura correttamente l’SDK */
+  const OpenAI  = (await import("openai")).default;
+  const openai  = new OpenAI({
+    apiKey : process.env.DEEPSEEK_API_KEY,          // chiave DeepSeek
+    baseURL: process.env.DEEPSEEK_BASE_URL ??       // endpoint DeepSeek
+             "https://api.deepseek.com/v1",
+    // → se il provider richiede intestazione custom, usa “baseURL”
+    //   e OpenAI SDK aggiungerà Authorization: Bearer <apiKey>
   });
 
-  const content = resp.choices[0].message.content?.trim() ?? "";
-  return { result: content };
-};
+  /* ② Scegli il modello in base al comando */
+  const model =
+    cmd === "image"
+      ? "deepseek-v"      // vision
+      : "deepseek-chat";  // solo testo
 
-// Variante che può richiedere anche una immagine (DeepSeek-V)
-const chatWithImage = async (prompt: string) => {
-  const OpenAI = (await import("openai")).default;
-  const openai = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY });
-
-  /* ① testo */
-  const textResp = await openai.chat.completions.create({
-    model: "deepseek-chat",
-    messages: [{ role: "user", content: prompt }],
-  });
-  const answer = textResp.choices[0].message.content?.trim() ?? "";
-
-  /* ② immagine (facoltativa) */
-  const imgResp = await openai.images.generate({
-    model:  "deepseek-image",
-    prompt: `Fashion luxury style: ${prompt}`,
-    size:   "512x512",
-  });
-  const url = imgResp.data?.[0]?.url ?? null;
-
-  return { result: answer, image: url };
-};
-
-// ---------------------------------------------------------------------
-// Route handler principale
-// ---------------------------------------------------------------------
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const service = searchParams.get("service");  // insight|matcher|trend|assistant
-  const prompt  = searchParams.get("prompt") ?? "";
-
-  if (!service) {
-    return NextResponse.json({ error: "missing service" }, { status: 400 });
-  }
-
+  /* ③ Chiama la chat completions */
   try {
-    switch (service) {
-      /* ------------------------------------------------------------ */
-      case "insight": {
-        // chiediamo 5 keyword JSON ← il front-end disegnerà il bar-chart.
-        const { result } = await chat(
-          "Restituisci ESATTAMENTE un array JSON di 5 oggetti {keyword,score} (score 0-100).",
-          prompt
-        );
-        return NextResponse.json({ result: JSON.parse(result) });
-      }
+    const completion = await openai.chat.completions.create({
+      model,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens : 512
+    });
 
-      /* ------------------------------------------------------------ */
-      case "matcher": {
-        const { result } = await chat(
-          "Restituisci un singolo prodotto luxury in JSON {name,price,image,why}. Immagine URL reale o placeholder Unsplash.",
-          prompt
-        );
-        return NextResponse.json({ result: JSON.parse(result) });
-      }
-
-      /* ------------------------------------------------------------ */
-      case "trend": {
-        const { result } = await chat(
-          "Fornisci 12 valori mensili di interesse (0-100) in un array JSON (solo numeri).",
-          prompt
-        );
-        return NextResponse.json({ result: JSON.parse(result) });
-      }
-
-      /* ------------------------------------------------------------ */
-      case "assistant": {
-        /* testo + potenziale immagine generata  */
-        const { result, image } = await chatWithImage(prompt);
-        return NextResponse.json({ result, image });
-      }
-
-      /* ------------------------------------------------------------ */
-      default:
-        return NextResponse.json({ error: "unknown service" }, { status: 400 });
-    }
+    return NextResponse.json({ ok: true, data: completion.choices[0].message });
   } catch (err: any) {
-    console.error("AI-route error", err);
+    console.error("[AI-route]", err);
     return NextResponse.json(
-      { error: err?.message ?? "server error" },
+      { ok: false, error: err?.message ?? "Unknown error" },
       { status: 500 }
     );
   }
