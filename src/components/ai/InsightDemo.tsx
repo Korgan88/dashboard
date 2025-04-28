@@ -2,61 +2,53 @@
 
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
+import { Chart, BarElement, CategoryScale, LinearScale } from "chart.js";
 import { CardDescription, Button } from "@/components/ui/card";
 
+Chart.register(BarElement, CategoryScale, LinearScale);
+
 export default function InsightDemo() {
-  const [labels, setLabels] = useState<string[]>([]);
-  const [values, setValues] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [labels, setLabels]   = useState<string[]>([]);
+  const [values, setValues]   = useState<number[]>([]);
 
-  async function run() {
+  const handleClick = async () => {
     setLoading(true);
-    const r = await fetch("/api/ai", {
+    const r  = await fetch("/api/ai", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        cmd: "chat",
-        prompt:
-          "Give me a JSON array of top-5 growing luxury categories 2025 with % growth"
-      })
-    }).then(r => r.json());
+      body: JSON.stringify({ type: "insight" }),
+    });
+    const { data } = await r.json();
+    /* data = { topBrands:[{name,score}, …] } */
+    setLabels(data.topBrands.map((b: any) => b.name));
+    setValues(data.topBrands.map((b: any) => b.score));
     setLoading(false);
-
-    try {
-      const json = JSON.parse(r.data.content);
-      setLabels(json.map((x: any) => x.category));
-      setValues(json.map((x: any) => x.growth));
-    } catch {
-      alert("Parsing error");
-    }
-  }
+  };
 
   return (
-    <div className="space-y-4">
-      <Button onClick={run} disabled={loading}>
-        {loading ? "..." : "Generate insight"}
-      </Button>
+    <>
+      <CardDescription>
+        Scopri i brand più “caldi” secondo DeepSeek.
+      </CardDescription>
 
-      {values.length > 0 && (
-        <>
-          <CardDescription>Top growth categories</CardDescription>
-          <Bar
-            data={{
-              labels,
-              datasets: [
-                {
-                  label: "% growth",
-                  data: values
-                }
-              ]
-            }}
-            options={{
-              plugins: { legend: { display: false } },
-              scales: { y: { beginAtZero: true } }
-            }}
-          />
-        </>
+      {labels.length > 0 && (
+        <Bar
+          options={{ plugins: { legend: { display: false } } }}
+          data={{
+            labels,
+            datasets: [
+              {
+                data: values,
+                borderWidth: 1,
+              },
+            ],
+          }}
+        />
       )}
-    </div>
+
+      <Button onClick={handleClick} disabled={loading}>
+        {loading ? "Carico…" : "Genera insight"}
+      </Button>
+    </>
   );
 }
