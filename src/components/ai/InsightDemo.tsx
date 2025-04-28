@@ -1,43 +1,51 @@
-/* src/components/ai/InsightDemo.tsx */
-"use client";
-import React, { useState } from "react";
-import { fetchAI } from "@/lib/fetchAI";
+'use client';
+
+import React, { useState } from 'react';
 
 export default function InsightDemo() {
-  const [prompt, setPrompt]   = useState("");
-  const [answer, setAnswer]   = useState("");
+  const [query, setQuery]     = useState('');
+  const [answer, setAnswer]   = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleRun() {
-    if (!prompt.trim()) return;
+  async function askInsight() {
+    if (!query.trim()) return;
     setLoading(true);
-    setAnswer("…");
+    setAnswer(null);
+
     try {
-      const { data } = await fetchAI({ service: "insight", prompt });
-      setAnswer(data);
+      const url  = `/api/ai?service=insight&prompt=${encodeURIComponent(query)}`;
+      const res  = await fetch(url);
+      const json = await res.json();
+      setAnswer(json.answer ?? json.error ?? 'Errore sconosciuto');
+    } catch (err) {
+      setAnswer('Network error');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="space-y-2">
-      <input
-        value={prompt}
-        onChange={e => setPrompt(e.target.value)}
-        placeholder="Esempio: quali colori domineranno la P/E 2026?"
-        className="w-full bg-gray-800 text-xs p-2 rounded"
+    <>
+      <textarea
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        placeholder="Chiedi un insight sul mercato luxury…"
+        className="w-full bg-gray-800 p-2 rounded text-sm mb-2"
+        rows={3}
       />
       <button
-        onClick={handleRun}
-        className="btn-primary w-full disabled:opacity-50"
+        onClick={askInsight}
         disabled={loading}
+        className="btn-primary w-full mb-2"
       >
-        {loading ? "Loading…" : "Run"}
+        {loading ? 'Analizzo…' : 'Ottieni Insight'}
       </button>
-      <pre className="text-[11px] whitespace-pre-wrap mt-2 max-h-48 overflow-y-auto">
-        {answer}
-      </pre>
-    </div>
+
+      {answer && (
+        <div className="mt-2 text-sm whitespace-pre-wrap text-gray-300">
+          {answer}
+        </div>
+      )}
+    </>
   );
 }
