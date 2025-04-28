@@ -1,35 +1,66 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparklines, SparklinesLine } from "react-sparklines";
+import { CardDescription } from "@/components/ui/card";
+
+type Point = { x: number; y: number };
+
+const TinyLine = ({ data }: { data: Point[] }) => {
+  // line in un <svg> 100×40
+  const path = data
+    .map(
+      (p, i) =>
+        `${i === 0 ? "M" : "L"}${(p.x * 100).toFixed(2)} ${
+          40 - p.y * 35 /* invert y */
+        }`
+    )
+    .join(" ");
+  return (
+    <svg width={100} height={40} viewBox="0 0 100 40" className="mx-auto">
+      <path d={path} fill="none" stroke="#4ade80" strokeWidth={2} />
+    </svg>
+  );
+};
 
 export default function TrendDemo() {
-  const [topic, setTopic] = useState("");
-  const [series, setSeries] = useState<number[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [trend, setTrend] = useState<Point[]>([]);
 
   const run = async () => {
     setLoading(true);
-    const r   = await fetch(`/api/ai?service=trend&prompt=${encodeURIComponent(topic)}`);
-    const js  = await r.json();   // { result: [14,18,25, …] }
-    setSeries(js.result);
+    setTrend([]);
+    const r = await fetch("/api/ai", {
+      method: "POST",
+      body: JSON.stringify({ mode: "trend" })
+    });
+    const json = (await r.json()) as { numbers: number[] };
+    // normalizza i valori 0-1 per lo spark
+    const max = Math.max(...json.numbers);
+    const pts = json.numbers.map((n, i) => ({
+      x: i / (json.numbers.length - 1),
+      y: n / max
+    }));
+    setTrend(pts);
     setLoading(false);
   };
 
   return (
-    <div className="space-y-3">
-      <input
-        value={topic}
-        onChange={e => setTopic(e.target.value)}
-        placeholder="Trend topic (es. handbag)"
-        className="w-full px-2 py-1 bg-gray-800 border border-gray-700 rounded"
-      />
-      <button onClick={run} className="btn-primary w-full">{loading ? "…" : "Trend"}</button>
+    <div className="space-y-2">
+      <button
+        className="btn-primary w-full"
+        onClick={run}
+        disabled={loading}
+      >
+        {loading ? "…" : "Genera trend"}
+      </button>
 
-      {series && (
-        <Sparklines data={series} width={100} height={30}>
-          <SparklinesLine style={{ stroke: "#ff00e0", fill: "none" }} />
-        </Sparklines>
+      {trend.length > 0 && (
+        <>
+          <TinyLine data={trend} />
+          <CardDescription className="text-center">
+            Proiezione percentuale dei prossimi 12 mesi
+          </CardDescription>
+        </>
       )}
     </div>
   );
