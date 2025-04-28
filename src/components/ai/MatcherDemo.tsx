@@ -1,55 +1,52 @@
-/* src/components/ai/MatcherDemo.tsx */
-"use client";
-import React, { useState } from "react";
-import { fetchAI } from "@/lib/fetchAI";
+'use client';
+
+import React, { useState } from 'react';
 
 export default function MatcherDemo() {
-  const [query, setQuery]     = useState("");
-  const [answer, setAnswer]   = useState("");
+  const [query, setQuery]     = useState('');
+  const [answer, setAnswer]   = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // mock prodotti demo
-  const items = [
-    "Borsa Chanel 2.55",
-    "Sneakers Balenciaga Triple-S",
-    "Rolex Submariner",
-    "Foulard Hermès carré 90"
-  ];
-
-  async function handleRun() {
+  async function askMatcher() {
     if (!query.trim()) return;
     setLoading(true);
-    setAnswer("…");
+    setAnswer(null);
+
     try {
-      const { data } = await fetchAI({
-        service: "matcher",
-        prompt : query,
-        items
-      });
-      setAnswer(data);
+      const url  = `/api/ai?service=matcher&prompt=${encodeURIComponent(query)}`;
+      const res  = await fetch(url);
+      const json = await res.json();
+      setAnswer(json.answer ?? json.error ?? 'Errore sconosciuto');
+    } catch (err) {
+      setAnswer('Network error');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="space-y-2">
+    <>
       <input
+        type="text"
         value={query}
         onChange={e => setQuery(e.target.value)}
-        placeholder="Esempio: borsa in pelle trapuntata nera"
-        className="w-full bg-gray-800 text-xs p-2 rounded"
+        placeholder="Descrivi lo stile del cliente…"
+        className="w-full bg-gray-800 p-2 rounded text-sm mb-2"
       />
       <button
-        onClick={handleRun}
-        className="btn-primary w-full disabled:opacity-50"
+        onClick={askMatcher}
         disabled={loading}
+        className="btn-primary w-full mb-2"
       >
-        {loading ? "Loading…" : "Match"}
+        {loading ? 'Cerco…' : 'Trova Match'}
       </button>
-      <pre className="text-[11px] whitespace-pre-wrap mt-2 max-h-48 overflow-y-auto">
-        {answer}
-      </pre>
-    </div>
+
+      {answer && (
+        <div className="mt-2 text-sm whitespace-pre-wrap text-gray-300">
+          {answer}
+        </div>
+      )}
+    </>
   );
 }
+
