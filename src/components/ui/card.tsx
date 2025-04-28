@@ -1,12 +1,13 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-interface CardProps {
+interface BaseProps {
   className?: string;
   children: React.ReactNode;
 }
 
-export function Card({ className, children }: CardProps) {
+/* ---------- contenitore ---------- */
+export function Card({ className, children }: BaseProps) {
   return (
     <div className={cn("dashboard-card", className)}>
       {children}
@@ -14,12 +15,8 @@ export function Card({ className, children }: CardProps) {
   );
 }
 
-interface CardHeaderProps {
-  className?: string;
-  children: React.ReactNode;
-}
-
-export function CardHeader({ className, children }: CardHeaderProps) {
+/* ---------- header ---------- */
+export function CardHeader({ className, children }: BaseProps) {
   return (
     <div className={cn("p-4 border-b border-gray-800", className)}>
       {children}
@@ -27,12 +24,8 @@ export function CardHeader({ className, children }: CardHeaderProps) {
   );
 }
 
-interface CardTitleProps {
-  className?: string;
-  children: React.ReactNode;
-}
-
-export function CardTitle({ className, children }: CardTitleProps) {
+/* ---------- titolo ---------- */
+export function CardTitle({ className, children }: BaseProps) {
   return (
     <h3 className={cn("text-lg font-semibold", className)}>
       {children}
@@ -40,12 +33,17 @@ export function CardTitle({ className, children }: CardTitleProps) {
   );
 }
 
-interface CardContentProps {
-  className?: string;
-  children: React.ReactNode;
+/* ---------- NUOVO: descrizione ---------- */
+export function CardDescription({ className, children }: BaseProps) {
+  return (
+    <p className={cn("mt-1 text-sm text-gray-400", className)}>
+      {children}
+    </p>
+  );
 }
 
-export function CardContent({ className, children }: CardContentProps) {
+/* ---------- contenuto ---------- */
+export function CardContent({ className, children }: BaseProps) {
   return (
     <div className={cn("p-4", className)}>
       {children}
