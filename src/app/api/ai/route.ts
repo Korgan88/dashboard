@@ -1,43 +1,37 @@
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
+import OpenAI from "openai";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
+const openai = new OpenAI({ apiKey: process.env.DEEPSEEK_API_KEY! });
+const model  = "deepseek-chat";
+
+/* Utilità comune */
+type Msg = { role: "user" | "assistant" | "system"; content: string };
+
 export async function POST(req: NextRequest) {
+  const { type } = await req.json();
+
+  /* prompt diversificati */
+  let prompt = "";
+  if (type === "insight") prompt = "Top 5 luxury fashion brands 2025 with score 0-100 JSON";
+  if (type === "trend")   prompt = "Give 12 monthly numbers (0-100) predicting 'quiet luxury' search interest JSON array";
+
+  const completion = await openai.chat.completions.create({
+    model,
+    temperature: 0.4,
+    max_tokens: 500,
+    messages: [{ role: "user", content: prompt }] as Msg[],
+  });
+
+  /* Cerchiamo di fare parsing sicuro */
+  let parsed: any = {};
   try {
-    const { cmd = "chat", prompt = "" } = await req.json();
-
-    const key = process.env.DEEPSEEK_API_KEY;
-    if (!key) throw new Error("missing DEEPSEEK_API_KEY");
-
-    const OpenAI = (await import("openai")).default;
-    const openai = new OpenAI({ apiKey: key });
-
-    const messages =
-      cmd === "trend"
-        ? [
-            {
-              role: "system",
-              content:
-                "Return ONLY a JSON array of 12 numbers (monthly growth)." +
-                "No text, no keys."
-            },
-            { role: "user", content: prompt }
-          ]
-        : [{ role: "user", content: prompt }];
-
-    const completion = await openai.chat.completions.create({
-      model: "deepseek-chat",
-      temperature: 0.4,
-      max_tokens: 500,
-      messages
-    });
-
-    return Response.json({ ok: true, data: completion.choices[0].message });
-  } catch (e: any) {
-    return Response.json(
-      { ok: false, error: e?.message ?? "unknown" },
-      { status: 500 }
-    );
+    parsed = JSON.parse(completion.choices[0].message.content || "{}");
+  } catch {
+    parsed = { raw: completion.choices[0].message.content };
   }
+
+  return Response.json({ ok: true, data: parsed });
 }
