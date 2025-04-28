@@ -2,45 +2,38 @@
 
 import React, { useState } from "react";
 import { Sparklines, SparklinesLine } from "react-sparklines";
-import { Button, CardDescription } from "@/components/ui/card";
+import { CardDescription, Button } from "@/components/ui/card";
 
 export default function TrendDemo() {
-  const [data, setData] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [trend, setTrend]     = useState<number[]>([]);
 
-  async function run() {
+  const handleClick = async () => {
     setLoading(true);
-    const r = await fetch("/api/ai", {
+    const r  = await fetch("/api/ai", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        cmd: "trend",
-        prompt: "12-month growth forecast for Swiss luxury market %"
-      })
-    }).then(r => r.json());
+      body: JSON.stringify({ type: "trend" }),
+    });
+    const { data } = await r.json(); /* data = { points:[…] } */
+    setTrend(data.points);
     setLoading(false);
-
-    try {
-      setData(JSON.parse(r.data.content));
-    } catch {
-      alert("bad json");
-    }
-  }
+  };
 
   return (
-    <div className="space-y-4">
-      <Button onClick={run} disabled={loading}>
-        {loading ? "..." : "Generate trend"}
-      </Button>
+    <>
+      <CardDescription>
+        Proiezione di popolarità (0-100) per “quiet luxury”.
+      </CardDescription>
 
-      {data.length === 12 && (
-        <>
-          <CardDescription>Monthly growth %</CardDescription>
-          <Sparklines data={data}>
-            <SparklinesLine style={{ strokeWidth: 3 }} />
-          </Sparklines>
-        </>
+      {trend.length > 0 && (
+        <Sparklines data={trend} height={60}>
+          <SparklinesLine style={{ stroke: "#4ade80", fill: "none" }} />
+        </Sparklines>
       )}
-    </div>
+
+      <Button onClick={handleClick} disabled={loading}>
+        {loading ? "Carico…" : "Genera trend"}
+      </Button>
+    </>
   );
 }
