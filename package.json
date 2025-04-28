@@ -1,8 +1,7 @@
 {
   "name": "luxai-dashboard",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.2.0",
-  "type": "module",
 
   "scripts": {
     "dev":   "next dev",
@@ -12,30 +11,22 @@
   },
 
   "dependencies": {
-    /* core */
     "next": "13.4.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-
-    /* styling */
     "tailwindcss": "^3.3.2",
     "postcss": "^8.4.21",
     "autoprefixer": "^10.4.14",
 
-    /* charts – solo questi due! */
-    "chart.js": "^4.4.1",
+    "openai": "^4.28.0",
+    "chart.js": "^4.4.0",
     "react-chartjs-2": "^5.3.0",
-
-    /* mini-sparkline per Trend demo */
-    "react-sparklines": "^1.7.0",
-
-    /* SDK DeepSeek (OpenAI-compatible) */
-    "openai": "^4.29.0"
+    "react-sparklines": "^1.7.0"
   },
 
   "devDependencies": {
     "typescript": "^5.1.6",
-    "@types/react": "^18.2.43",
+    "@types/react": "^18.2.41",
     "eslint": "8.38.0",
     "eslint-config-next": "13.4.5"
   }
