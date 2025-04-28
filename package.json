@@ -15,9 +15,7 @@
     "tailwindcss": "^3.3.2",
     "postcss": "^8.4.21",
     "autoprefixer": "^10.4.14",
-
-    "openai": "^4.28.0",          // ← NEW  (SDK ufficiale, richiesto dalla route)
-    "react-sparklines": "^1.7.0"  // ← NEW  (mini-grafico nel Trend Demo)
+    "openai": "^4.28.0"
   },
   "devDependencies": {
     "typescript": "^5.1.6",
