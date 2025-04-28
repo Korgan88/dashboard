@@ -2,47 +2,60 @@
 
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement } from "chart.js";
-
-ChartJS.register(CategoryScale, LinearScale, BarElement);
+import { CardDescription, Button } from "@/components/ui/card";
 
 export default function InsightDemo() {
-  const [data, setData] = useState<{ labels: string[]; values: number[] } | null>(null);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [values, setValues] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
-  const [prompt, setPrompt]   = useState("");
 
-  const run = async () => {
+  async function run() {
     setLoading(true);
-    const res = await fetch(`/api/ai?service=insight&prompt=${encodeURIComponent(prompt)}`);
-    const json = await res.json();
-    /** json.result dovrebbe essere un array: [{keyword:"streetwear",score:42}, …] */
-    const labels = json.result.map((k: any) => k.keyword);
-    const values = json.result.map((k: any) => k.score);
-    setData({ labels, values });
+    const r = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cmd: "chat",
+        prompt:
+          "Give me a JSON array of top-5 growing luxury categories 2025 with % growth"
+      })
+    }).then(r => r.json());
     setLoading(false);
-  };
+
+    try {
+      const json = JSON.parse(r.data.content);
+      setLabels(json.map((x: any) => x.category));
+      setValues(json.map((x: any) => x.growth));
+    } catch {
+      alert("Parsing error");
+    }
+  }
 
   return (
-    <div className="space-y-3">
-      <input
-        value={prompt}
-        onChange={e => setPrompt(e.target.value)}
-        placeholder="Tema (es. luxury sneakers 2025)"
-        className="w-full px-2 py-1 bg-gray-800 border border-gray-700 rounded"
-      />
-      <button onClick={run} className="btn-primary w-full">{loading ? "…" : "Genera"}</button>
+    <div className="space-y-4">
+      <Button onClick={run} disabled={loading}>
+        {loading ? "..." : "Generate insight"}
+      </Button>
 
-      {data && (
-        <Bar
-          data={{
-            labels: data.labels,
-            datasets: [{ data: data.values, backgroundColor: "#00d1ff99" }],
-          }}
-          options={{
-            plugins: { legend: { display: false } },
-            scales: { x: { ticks: { color: "#ccc" } }, y: { ticks: { color: "#ccc" } } },
-          }}
-        />
+      {values.length > 0 && (
+        <>
+          <CardDescription>Top growth categories</CardDescription>
+          <Bar
+            data={{
+              labels,
+              datasets: [
+                {
+                  label: "% growth",
+                  data: values
+                }
+              ]
+            }}
+            options={{
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true } }
+            }}
+          />
+        </>
       )}
     </div>
   );
