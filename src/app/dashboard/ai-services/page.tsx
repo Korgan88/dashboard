@@ -1,12 +1,15 @@
 "use client";
 
+// Renderizza sempre lato-server, evitando HTML statico
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-import InsightDemo     from "@/components/ai/InsightDemo";
-import MatcherDemo     from "@/components/ai/MatcherDemo";
-import TrendDemo       from "@/components/ai/TrendDemo";
-import AssistantDemo   from "@/components/ai/AssistantDemo";
+import InsightDemo   from "@/components/ai/InsightDemo";
+import MatcherDemo   from "@/components/ai/MatcherDemo";
+import TrendDemo     from "@/components/ai/TrendDemo";
+import AssistantDemo from "@/components/ai/AssistantDemo";
 
 export default function AIServicesPage() {
   return (
