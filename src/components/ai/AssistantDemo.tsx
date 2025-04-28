@@ -1,51 +1,35 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function AssistantDemo() {
-  const [msg,     setMsg]     = useState('');
-  const [answer,  setAnswer]  = useState<string | null>(null);
+  const [q, setQ] = useState("");
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [image, setImage]   = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function askAssistant() {
-    if (!msg.trim()) return;
+  const run = async () => {
     setLoading(true);
-    setAnswer(null);
-
-    try {
-      const url  = `/api/ai?service=assistant&prompt=${encodeURIComponent(msg)}`;
-      const res  = await fetch(url);
-      const json = await res.json();
-      setAnswer(json.answer ?? json.error ?? 'Errore sconosciuto');
-    } catch (err) {
-      setAnswer('Network error');
-    } finally {
-      setLoading(false);
-    }
-  }
+    const res = await fetch(`/api/ai?service=assistant&prompt=${encodeURIComponent(q)}`);
+    const js  = await res.json(); // { result:"...", image?: "https://..." }
+    setAnswer(js.result);
+    setImage(js.image ?? null);
+    setLoading(false);
+  };
 
   return (
-    <>
-      <input
-        type="text"
-        value={msg}
-        onChange={e => setMsg(e.target.value)}
-        placeholder="Chiedi qualcosa all’assistente…"
-        className="w-full bg-gray-800 p-2 rounded text-sm mb-2"
+    <div className="space-y-3">
+      <textarea
+        rows={3}
+        value={q}
+        onChange={e => setQ(e.target.value)}
+        placeholder="Chiedi qualsiasi cosa su moda luxury..."
+        className="w-full px-2 py-1 bg-gray-800 border border-gray-700 rounded"
       />
-      <button
-        onClick={askAssistant}
-        disabled={loading}
-        className="btn-primary w-full mb-2"
-      >
-        {loading ? 'Rispondo…' : 'Invia'}
-      </button>
+      <button onClick={run} className="btn-primary w-full">{loading ? "…" : "Chiedi"}</button>
 
-      {answer && (
-        <div className="mt-2 text-sm whitespace-pre-wrap text-gray-300">
-          {answer}
-        </div>
-      )}
-    </>
+      {answer && <p className="text-sm text-gray-300 whitespace-pre-wrap">{answer}</p>}
+      {image  && <img src={image} alt="AI generated" className="w-full h-40 object-cover rounded" />}
+    </div>
   );
 }
